@@ -57,17 +57,15 @@ def main():
             privacy_url = url
             break
 
-    print("privacy index: ", privacy_page_i)
-    print("privacy url:   ", privacy_url)
-    # print(all_resources[privacy_page_i])
-    # print(all_urls[privacy_page_i])
-
     # scrape privacy policy page
     privacy_page = scrape_page(HOST + privacy_url)
     text = privacy_page.get_text(separator=" ", strip=True)
-    # with open("privacy_text.txt", "w") as out_f:
-    #     out_f.write(text)
-    # out_f.close()
+    # use regex to strip the text of special characters and numbers
+    stripped_text = re.sub("[^a-zA-Z\s]", "", text)
+    text_list = stripped_text.lower().split()
+    # create a Counter object to calculate word frequencies
+    frequencies = collections.Counter(text_list)
+    write_to_json_file("word_count.json", dict(frequencies))
 
 if __name__ == "__main__":
     main()
