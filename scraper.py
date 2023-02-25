@@ -6,8 +6,10 @@ import collections
 
 HOST = "https://www.cfcunderwriting.com"
 
-def is_external(url):
-    return (url.startswith("http") or url.startswith("//")) and "cfcunderwriting" not in url
+def get_privacy_policy_location(all_urls):
+    for _, url in enumerate(all_urls):
+        if "privacy-policy" in url:
+            return url
 
 def get_external_resources(all_urls):
     external_resources = []
@@ -16,6 +18,9 @@ def get_external_resources(all_urls):
             external_resources.append(url)
 
     return external_resources
+
+def is_external(url):
+    return (url.startswith("http") or url.startswith("//")) and "cfcunderwriting" not in url
 
 def get_url(tag, attr):
     return tag[attr]
@@ -38,20 +43,14 @@ def main():
     all_resources = index_page.find_all(has_url)  # full tags
     all_urls = [get_url(r, "href") if r.has_attr("href") else get_url(r, "src") for r in all_resources]  # urls
 
-    # json list of external resources
+    # list of external resources
     external_resources = get_external_resources(all_urls)
     write_to_json_file("external_resources.json", external_resources)
 
-    privacy_page_i = None   # index of privacy policy page
-    privacy_url = None      # url of privacy policy page
-    for i, url in enumerate(all_urls):
-        if "privacy-policy" in url:
-            privacy_page_i = i
-            privacy_url = url
-            break
+    privacy_page_location = get_privacy_policy_location(all_urls)
 
     # scrape privacy policy page
-    privacy_page = scrape_page(HOST + privacy_url)
+    privacy_page = scrape_page(HOST + privacy_page_location)
     text = privacy_page.get_text(separator=" ", strip=True)
     # use regex to strip the text of special characters and numbers
     stripped_text = re.sub("[^a-zA-Z\s]", "", text)
