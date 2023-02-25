@@ -10,12 +10,24 @@ A simple webscraper program for [www.cfcunderwriting.com](https://www.cfcunderwr
 
 ## Running the application
 
-In the terminal or an IDE, navigate to the project's root directory, and run:
+To run the program with one command, navigate to the root directory and run:
+
+`make all`
+
+Alternatively, in the terminal or an IDE, navigate to the project's root directory, and run:
 
 `pip install -r requirements.txt`
 
 `python ./scraper.py`
 
 Note: make sure you are using pip and python versions > 3.
+
+To cleanup the files you can run:
+
+`make clean`
+
+or:
+
+`rm external_resources.json word_count.json`
 
 The program will output two `.json` files, one for the externally loaded resources, and the other for the word frequency count.
